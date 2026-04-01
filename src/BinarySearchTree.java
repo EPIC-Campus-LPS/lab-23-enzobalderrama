@@ -1,6 +1,10 @@
+import java.util.ArrayList;
+
 public class BinarySearchTree<E extends Comparable<E>>{
     private TreeNode<E> root;
     private int count;
+    private int max;
+    private ArrayList<Integer> someOrder;
     public BinarySearchTree(){
         root = new TreeNode(null, null, null);
     }
@@ -60,7 +64,7 @@ public class BinarySearchTree<E extends Comparable<E>>{
         count = 1;
         return extraNodes(newFocus);
     }
-    public int extraNodes(TreeNode<E> temp){
+    private int extraNodes(TreeNode<E> temp){
         if (temp.getLeftChild() != null){
             temp = temp.getLeftChild();
             count++;
@@ -72,5 +76,68 @@ public class BinarySearchTree<E extends Comparable<E>>{
             return (extraNodes(temp));
         }
         return count;
+    }
+
+    public int countLeafNodes(){
+        if (root == null){
+            return 0;
+        }
+        TreeNode<E> newFocus = root;
+        count = 0;
+        return extraLeafNodes(newFocus);
+    }
+    private int extraLeafNodes(TreeNode<E> temp){
+        if (temp.getLeftChild() != null){
+            temp = temp.getLeftChild();
+            return (extraLeafNodes(temp));
+        }
+        if (temp.getRightChild() != null){
+            temp = temp.getRightChild();
+            return (extraLeafNodes(temp));
+        }
+        if (temp.getLeftChild() == null && temp.getRightChild() == null){
+            count++;
+        }
+        return count;
+    }
+
+    public int getHeight(){
+        if (root == null){
+            return 0;
+        }
+        TreeNode<E> newFocus = root;
+        max = 1;
+        int tempMax = max;
+        return totalHeight(newFocus, max, tempMax);
+    }
+    private int totalHeight(TreeNode<E> temp, int maxi, int tem){
+        if (temp.getLeftChild() != null){
+            temp = temp.getLeftChild();
+            tem++;
+            return (totalHeight(temp, maxi, tem));
+        }
+        if (temp.getRightChild() != null){
+            temp = temp.getRightChild();
+            tem++;
+            return (totalHeight(temp, maxi, tem));
+        }
+        if (tem > maxi && tem > max){
+            max = tem;
+            maxi = tem;
+        }
+        tem = 1;
+        return max;
+    }
+
+    public void printInOrder(){
+        someOrder = new ArrayList<>();
+        if (root == null){
+            return;
+        }
+        TreeNode<E> inFocus = root;
+
+        for (int i = 0; i < someOrder.size(); i++){
+            System.out.println(someOrder.get(i));
+        }
     }
 }
