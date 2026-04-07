@@ -129,15 +129,35 @@ public class BinarySearchTree<E extends Comparable<E>>{
         return max;
     }
 
-    public void printInOrder(){
+    public void printPreOrder(){
         someOrder = new ArrayList<>();
         if (root == null){
             return;
         }
         TreeNode<E> inFocus = root;
+        System.out.println(inFocus);
+        if (inFocus.getLeftChild() != null){
+            inFocus = inFocus.getLeftChild();
+            System.out.println(inFocus);
+            preOrder(inFocus);
+        }
+        if (inFocus.getRightChild() != null){
+            inFocus = inFocus.getRightChild();
+            System.out.println(inFocus);
+            preOrder(inFocus);
+        }
+    }
 
-        for (int i = 0; i < someOrder.size(); i++){
-            System.out.println(someOrder.get(i));
+    private void preOrder(TreeNode<E> temp){
+        if (temp.getLeftChild() != null){
+            temp = temp.getLeftChild();
+            System.out.println(temp);
+            preOrder(temp);
+        }
+        if (temp.getRightChild() != null){
+            temp = temp.getRightChild();
+            System.out.println(temp);
+            preOrder(temp);
         }
     }
 }
