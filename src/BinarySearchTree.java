@@ -5,7 +5,6 @@ public class BinarySearchTree<E extends Comparable<E>>{
     private TreeNode<E> root;
     private int count;
     private int max;
-    private ArrayList<TreeNode<E>> someOrder;
     public BinarySearchTree(){
         root = new TreeNode(null, null, null);
     }
@@ -305,5 +304,37 @@ public class BinarySearchTree<E extends Comparable<E>>{
         }
     }
 
+    public void clearTree(){
+        root = new TreeNode<>(null, null,null);
+    }
+
+    public void makeTree(ArrayList<Integer> parts){
+        clearTree();
+        root.setValue((E) parts.get(0));
+        TreeNode<E> temp = root;
+        for (int i = 1; i < parts.size(); i++){
+            if (parts.get(i).compareTo((Integer)temp.getValue()) <= 0){
+                if (temp.getLeftChild() == null){
+                    temp = temp.getLeftChild();
+                    temp.setValue((E)parts.get(i));
+                }
+                else{
+                    temp = temp.getLeftChild();
+                    lastRecur(temp, parts, i);
+                }
+            }
+            else{
+                if (temp.getRightChild() == null){
+                    temp = temp.getRightChild();
+                    temp.setValue((E)parts.get(i));
+                }
+                else{
+                    temp = temp.getRightChild();
+                    lastRecur(temp, parts, i);
+                }
+            }
+        }
+    }
+    private void lastRecur(TreeNode<E> temp, ArrayList<Integer> parts,
 
 }
