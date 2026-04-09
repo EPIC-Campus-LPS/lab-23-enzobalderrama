@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 
 public class BinarySearchTree<E extends Comparable<E>>{
     private TreeNode<E> root;
@@ -216,6 +217,91 @@ public class BinarySearchTree<E extends Comparable<E>>{
         if (temp.getRightChild() != null) {
             temp = temp.getRightChild();
             inOrder(temp);
+        }
+    }
+
+    public E delete(E value){
+        E tempEl = null;
+        if (root == null){
+            throw new NoSuchElementException();
+        }
+        TreeNode<E> target = root;
+        if (target.equals(value)){
+            tempEl = target.getValue();
+            target.setValue(null);
+            systemDeleter(target);
+            return tempEl;
+        }
+        if (target.getLeftChild() != null){
+            target = target.getLeftChild();
+            if (target.getValue().equals(value)){
+                tempEl = target.getValue();
+                target.setValue(null);
+                systemDeleter(target);
+                return tempEl;
+            }
+            else{
+                remover(target, value);
+            }
+        }
+        if (target.getRightChild() != null){
+            target = target.getRightChild();
+            if (target.getValue().equals(value)){
+                tempEl = target.getValue();
+                target.setValue(null);
+                systemDeleter(target);
+                return tempEl;
+            }
+            else{
+                remover(target, value);
+            }
+        }
+        return null;
+    }
+    private E remover(TreeNode<E> temp, E value){
+        if (temp.getLeftChild() != null){
+            temp = temp.getLeftChild();
+            if (temp.getValue().equals(value)){
+                E tempEl = temp.getValue();
+                temp.setValue(null);
+                systemDeleter(temp);
+                return tempEl;
+            }
+            else{
+                remover(temp, value);
+            }
+        }
+        if (temp.getRightChild() != null){
+            temp = temp.getRightChild();
+            if (temp.getValue().equals(value)){
+                E tempEl = temp.getValue();
+                temp.setValue(null);
+                systemDeleter(temp);
+                return tempEl;
+            }
+            else{
+                remover(temp, value);
+            }
+        }
+        return null;
+    }
+    private void systemDeleter(TreeNode<E> temp){
+        if (temp.getLeftChild() == null && temp.getRightChild() == null){
+            return;
+        }
+        if (temp.getLeftChild() == null && temp.getRightChild() != null){
+            temp.setValue((E) temp.getRightChild());
+            temp = temp.getRightChild();
+            temp.setValue(null);
+            systemDeleter(temp);
+            return;
+        }
+        else{
+            temp.setValue((E)temp.getLeftChild());
+            temp = temp.getLeftChild();
+            temp.setValue(null);
+            systemDeleter(temp);
+            return;
         }
     }
 
