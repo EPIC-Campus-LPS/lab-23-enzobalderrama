@@ -4,7 +4,7 @@ public class BinarySearchTree<E extends Comparable<E>>{
     private TreeNode<E> root;
     private int count;
     private int max;
-    private ArrayList<Integer> someOrder;
+    private ArrayList<TreeNode<E>> someOrder;
     public BinarySearchTree(){
         root = new TreeNode(null, null, null);
     }
@@ -130,8 +130,8 @@ public class BinarySearchTree<E extends Comparable<E>>{
     }
 
     public void printPreOrder(){
-        someOrder = new ArrayList<>();
         if (root == null){
+            System.out.println("Nothing to print.");
             return;
         }
         TreeNode<E> inFocus = root;
@@ -160,4 +160,64 @@ public class BinarySearchTree<E extends Comparable<E>>{
             preOrder(temp);
         }
     }
+
+    public void printPostOrder(){
+        if (root == null){
+            System.out.println("Nothing to print.");
+            return;
+        }
+        TreeNode<E> inFocus = root;
+        if (inFocus.getLeftChild() != null){
+            inFocus = inFocus.getLeftChild();
+            postOrder(inFocus);
+        }
+        if (inFocus.getRightChild() != null){
+            inFocus = inFocus.getRightChild();
+            postOrder(inFocus);
+        }
+        System.out.println(inFocus);
+    }
+
+    private void postOrder(TreeNode<E> temp){
+        if (temp.getLeftChild() != null){
+            temp = temp.getLeftChild();
+            postOrder(temp);
+        }
+        if (temp.getRightChild() != null){
+            temp = temp.getRightChild();
+            postOrder(temp);
+        }
+        System.out.println(temp);
+    }
+
+    public void printInOrder(){
+        if (root == null){
+            System.out.println("Nothing to print.");
+            return;
+        }
+        TreeNode<E> inFocus = root;
+        if (inFocus.getLeftChild() != null){
+            inFocus = inFocus.getLeftChild();
+            inOrder(inFocus);
+        }
+        System.out.println(inFocus);
+        if (inFocus.getRightChild() != null){
+            inFocus = inFocus.getRightChild();
+            inOrder(inFocus);
+        }
+    }
+
+    private void inOrder(TreeNode<E> temp){
+        if (temp.getLeftChild() != null){
+            temp = temp.getLeftChild();
+            inOrder(temp);
+        }
+        System.out.println(temp);
+        if (temp.getRightChild() != null) {
+            temp = temp.getRightChild();
+            inOrder(temp);
+        }
+    }
+
+
 }
