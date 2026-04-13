@@ -13,7 +13,19 @@ public class Main {
         }
         BinarySearchTree bst = new BinarySearchTree();
         bst.makeTree(fillIn);
-
-        System.out.println("Hello world!");
+        System.out.println("Tree has been made");
+        bst.add(5);
+        System.out.println("5 has been added");
+        bst.delete(8);
+        System.out.println("8 had been deleted(if it existed)");
+        System.out.println("Does BST contain 17? " + bst.contains(17));
+        bst.printInOrder();
+        bst.printPostOrder();
+        bst.printPreOrder();
+        System.out.println("Total # of nodes: " + bst.countNodes());
+        System.out.println("Total # of leaf nodes: " + bst.countLeafNodes());
+        System.out.println("Height of tree: " + bst.getHeight());
+        bst.clearTree();
+        System.out.println("Tree cleared");
     }
 }

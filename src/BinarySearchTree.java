@@ -149,6 +149,7 @@ public class BinarySearchTree<E extends Comparable<E>>{
     }
 
     private void preOrder(TreeNode<E> temp){
+        System.out.println("Preorder:");
         if (temp.getLeftChild() != null){
             temp = temp.getLeftChild();
             System.out.println(temp);
@@ -162,6 +163,7 @@ public class BinarySearchTree<E extends Comparable<E>>{
     }
 
     public void printPostOrder(){
+        System.out.println("PostOrder:");
         if (root == null){
             System.out.println("Nothing to print.");
             return;
@@ -191,6 +193,7 @@ public class BinarySearchTree<E extends Comparable<E>>{
     }
 
     public void printInOrder(){
+        System.out.println("InOrder:");
         if (root == null){
             System.out.println("Nothing to print.");
             return;
@@ -310,13 +313,15 @@ public class BinarySearchTree<E extends Comparable<E>>{
 
     public void makeTree(ArrayList<Integer> parts){
         clearTree();
+        if (parts.get(0) == null){
+            return;
+        }
         root.setValue((E) parts.get(0));
         TreeNode<E> temp = root;
         for (int i = 1; i < parts.size(); i++){
             if (parts.get(i).compareTo((Integer)temp.getValue()) <= 0){
                 if (temp.getLeftChild() == null){
-                    temp = temp.getLeftChild();
-                    temp.setValue((E)parts.get(i));
+                    temp.setLeftChild(new TreeNode<>((E)parts.get(i), null, null));
                 }
                 else{
                     temp = temp.getLeftChild();
@@ -325,8 +330,7 @@ public class BinarySearchTree<E extends Comparable<E>>{
             }
             else{
                 if (temp.getRightChild() == null){
-                    temp = temp.getRightChild();
-                    temp.setValue((E)parts.get(i));
+                    temp.setRightChild(new TreeNode<>((E)parts.get(i), null, null));
                 }
                 else{
                     temp = temp.getRightChild();
@@ -335,6 +339,27 @@ public class BinarySearchTree<E extends Comparable<E>>{
             }
         }
     }
-    private void lastRecur(TreeNode<E> temp, ArrayList<Integer> parts,
+    private void lastRecur(TreeNode<E> temp, ArrayList<Integer> parts, int placement){
+        if (parts.get(placement).compareTo((Integer)temp.getValue()) <= 0){
+            if (temp.getLeftChild() == null){
+                temp.setLeftChild(new TreeNode<>((E)parts.get(placement), null, null));
+                return;
+            }
+            else{
+                temp = temp.getLeftChild();
+                lastRecur(temp, parts, placement);
+            }
+        }
+        else{
+            if (temp.getRightChild() == null){
+                temp.setRightChild(new TreeNode<>((E)parts.get(placement), null, null));
+                return;
+            }
+            else{
+                temp = temp.getRightChild();
+                lastRecur(temp, parts, placement);
+            }
+        }
+    }
 
 }
