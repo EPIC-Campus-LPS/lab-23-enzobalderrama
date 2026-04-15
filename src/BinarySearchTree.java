@@ -10,13 +10,13 @@ public class BinarySearchTree<E extends Comparable<E>>{
     }
 
     public void add(E value){
-        if (root == null){
+        if (root.getValue() == null){
             root.setValue(value);
             return;
         }
         TreeNode<E> newFocus = root;
         while (true){
-            if (newFocus.getValue().compareTo(value) <= 0){
+            if (newFocus.getValue().compareTo(value) > 0){
                 if (newFocus.getLeftChild() == null){
                     newFocus.setLeftChild(new TreeNode(value, null, null));
                     return;
@@ -34,15 +34,15 @@ public class BinarySearchTree<E extends Comparable<E>>{
     }
 
     public boolean contains(E value){
-        if (root == null){
+        if (root.getValue() == null){
             return false;
         }
         TreeNode<E> newFocus = root;
         while (true){
-            if (newFocus.equals(value)){
+            if (newFocus.getValue().equals(value)){
                 return true;
             }
-            if (newFocus.getValue().compareTo(value) <= 0){
+            if (newFocus.getValue().compareTo(value) > 0){
                 if (newFocus.getLeftChild() == null){
                     return false;
                 }
@@ -57,29 +57,25 @@ public class BinarySearchTree<E extends Comparable<E>>{
         }
     }
     public int countNodes(){
-        if (root == null){
+        if (root.getValue() == null){
             return 0;
         }
         TreeNode<E> newFocus = root;
-        count = 1;
         return extraNodes(newFocus);
     }
     private int extraNodes(TreeNode<E> temp){
+        int count = 1;
         if (temp.getLeftChild() != null){
-            temp = temp.getLeftChild();
-            count++;
-            return (extraNodes(temp));
+            count += extraNodes(temp.getLeftChild());
         }
         if (temp.getRightChild() != null){
-            temp = temp.getRightChild();
-            count++;
-            return (extraNodes(temp));
+            count += extraNodes(temp.getRightChild());
         }
         return count;
     }
 
     public int countLeafNodes(){
-        if (root == null){
+        if (root.getValue() == null){
             return 0;
         }
         TreeNode<E> newFocus = root;
@@ -88,12 +84,10 @@ public class BinarySearchTree<E extends Comparable<E>>{
     }
     private int extraLeafNodes(TreeNode<E> temp){
         if (temp.getLeftChild() != null){
-            temp = temp.getLeftChild();
-            return (extraLeafNodes(temp));
+            count += extraLeafNodes(temp.getLeftChild());
         }
         if (temp.getRightChild() != null){
-            temp = temp.getRightChild();
-            return (extraLeafNodes(temp));
+            count += extraLeafNodes(temp.getLeftChild());
         }
         if (temp.getLeftChild() == null && temp.getRightChild() == null){
             count++;
@@ -102,35 +96,29 @@ public class BinarySearchTree<E extends Comparable<E>>{
     }
 
     public int getHeight(){
-        if (root == null){
+        if (root.getValue() == null){
             return 0;
         }
         TreeNode<E> newFocus = root;
-        max = 1;
-        int tempMax = max;
-        return totalHeight(newFocus, max, tempMax);
+        return totalHeight(newFocus);
     }
-    private int totalHeight(TreeNode<E> temp, int maxi, int tem){
+    private int totalHeight(TreeNode<E> temp){
+        int left = 0;
+        int right = 0;
         if (temp.getLeftChild() != null){
-            temp = temp.getLeftChild();
-            tem++;
-            return (totalHeight(temp, maxi, tem));
+            left = totalHeight(temp.getLeftChild());
         }
         if (temp.getRightChild() != null){
-            temp = temp.getRightChild();
-            tem++;
-            return (totalHeight(temp, maxi, tem));
+            right = totalHeight(temp.getRightChild());
         }
-        if (tem > maxi && tem > max){
-            max = tem;
-            maxi = tem;
+        if (left > right){
+            return left+1;
         }
-        tem = 1;
-        return max;
+        return right+1;
     }
 
     public void printPreOrder(){
-        if (root == null){
+        if (root.getValue() == null){
             System.out.println("Nothing to print.");
             return;
         }
@@ -164,7 +152,7 @@ public class BinarySearchTree<E extends Comparable<E>>{
 
     public void printPostOrder(){
         System.out.println("PostOrder:");
-        if (root == null){
+        if (root.getValue() == null){
             System.out.println("Nothing to print.");
             return;
         }
@@ -194,7 +182,7 @@ public class BinarySearchTree<E extends Comparable<E>>{
 
     public void printInOrder(){
         System.out.println("InOrder:");
-        if (root == null){
+        if (root.getValue() == null){
             System.out.println("Nothing to print.");
             return;
         }
@@ -224,11 +212,11 @@ public class BinarySearchTree<E extends Comparable<E>>{
 
     public E delete(E value){
         E tempEl = null;
-        if (root == null){
+        if (root.getValue() == null){
             throw new NoSuchElementException();
         }
         TreeNode<E> target = root;
-        if (target.equals(value)){
+        if (target.getValue().equals(value)){
             tempEl = target.getValue();
             target.setValue(null);
             systemDeleter(target);
@@ -292,14 +280,14 @@ public class BinarySearchTree<E extends Comparable<E>>{
             return;
         }
         if (temp.getLeftChild() == null && temp.getRightChild() != null){
-            temp.setValue((E) temp.getRightChild());
+            temp.setValue(temp.getRightChild().getValue());
             temp = temp.getRightChild();
             temp.setValue(null);
             systemDeleter(temp);
             return;
         }
         else{
-            temp.setValue((E)temp.getLeftChild());
+            temp.setValue(temp.getLeftChild().getValue());
             temp = temp.getLeftChild();
             temp.setValue(null);
             systemDeleter(temp);
@@ -319,7 +307,7 @@ public class BinarySearchTree<E extends Comparable<E>>{
         root.setValue((E) parts.get(0));
         TreeNode<E> temp = root;
         for (int i = 1; i < parts.size(); i++){
-            if (parts.get(i).compareTo((Integer)temp.getValue()) <= 0){
+            if (parts.get(i).compareTo((Integer)temp.getValue()) > 0){
                 if (temp.getLeftChild() == null){
                     temp.setLeftChild(new TreeNode<>((E)parts.get(i), null, null));
                 }
@@ -340,7 +328,7 @@ public class BinarySearchTree<E extends Comparable<E>>{
         }
     }
     private void lastRecur(TreeNode<E> temp, ArrayList<Integer> parts, int placement){
-        if (parts.get(placement).compareTo((Integer)temp.getValue()) <= 0){
+        if (parts.get(placement).compareTo((Integer)temp.getValue()) > 0){
             if (temp.getLeftChild() == null){
                 temp.setLeftChild(new TreeNode<>((E)parts.get(placement), null, null));
                 return;
