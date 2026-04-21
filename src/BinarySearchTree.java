@@ -1,3 +1,5 @@
+import com.sun.source.tree.Tree;
+
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
@@ -79,18 +81,18 @@ public class BinarySearchTree<E extends Comparable<E>>{
             return 0;
         }
         TreeNode<E> newFocus = root;
-        count = 0;
         return extraLeafNodes(newFocus);
     }
     private int extraLeafNodes(TreeNode<E> temp){
+        int count = 0;
+        if (temp.getLeftChild() == null && temp.getRightChild() == null){
+            return 1;
+        }
         if (temp.getLeftChild() != null){
             count += extraLeafNodes(temp.getLeftChild());
         }
         if (temp.getRightChild() != null){
-            count += extraLeafNodes(temp.getLeftChild());
-        }
-        if (temp.getLeftChild() == null && temp.getRightChild() == null){
-            count++;
+            count += extraLeafNodes(temp.getRightChild());
         }
         return count;
     }
@@ -118,35 +120,21 @@ public class BinarySearchTree<E extends Comparable<E>>{
     }
 
     public void printPreOrder(){
+        System.out.println("Preorder:");
         if (root.getValue() == null){
             System.out.println("Nothing to print.");
             return;
         }
-        TreeNode<E> inFocus = root;
-        System.out.println(inFocus);
-        if (inFocus.getLeftChild() != null){
-            inFocus = inFocus.getLeftChild();
-            System.out.println(inFocus);
-            preOrder(inFocus);
-        }
-        if (inFocus.getRightChild() != null){
-            inFocus = inFocus.getRightChild();
-            System.out.println(inFocus);
-            preOrder(inFocus);
-        }
+        preOrder(root);
     }
 
     private void preOrder(TreeNode<E> temp){
-        System.out.println("Preorder:");
+        System.out.println(temp.getValue());
         if (temp.getLeftChild() != null){
-            temp = temp.getLeftChild();
-            System.out.println(temp);
-            preOrder(temp);
+            preOrder(temp.getLeftChild());
         }
         if (temp.getRightChild() != null){
-            temp = temp.getRightChild();
-            System.out.println(temp);
-            preOrder(temp);
+            preOrder(temp.getRightChild());
         }
     }
 
@@ -156,28 +144,17 @@ public class BinarySearchTree<E extends Comparable<E>>{
             System.out.println("Nothing to print.");
             return;
         }
-        TreeNode<E> inFocus = root;
-        if (inFocus.getLeftChild() != null){
-            inFocus = inFocus.getLeftChild();
-            postOrder(inFocus);
-        }
-        if (inFocus.getRightChild() != null){
-            inFocus = inFocus.getRightChild();
-            postOrder(inFocus);
-        }
-        System.out.println(inFocus);
+        postOrder(root);
     }
 
     private void postOrder(TreeNode<E> temp){
         if (temp.getLeftChild() != null){
-            temp = temp.getLeftChild();
-            postOrder(temp);
+            postOrder(temp.getLeftChild());
         }
         if (temp.getRightChild() != null){
-            temp = temp.getRightChild();
-            postOrder(temp);
+            postOrder(temp.getRightChild());
         }
-        System.out.println(temp);
+        System.out.println(temp.getValue());
     }
 
     public void printInOrder(){
@@ -186,113 +163,50 @@ public class BinarySearchTree<E extends Comparable<E>>{
             System.out.println("Nothing to print.");
             return;
         }
-        TreeNode<E> inFocus = root;
-        if (inFocus.getLeftChild() != null){
-            inFocus = inFocus.getLeftChild();
-            inOrder(inFocus);
-        }
-        System.out.println(inFocus);
-        if (inFocus.getRightChild() != null){
-            inFocus = inFocus.getRightChild();
-            inOrder(inFocus);
-        }
+        inOrder(root);
     }
 
     private void inOrder(TreeNode<E> temp){
         if (temp.getLeftChild() != null){
-            temp = temp.getLeftChild();
-            inOrder(temp);
+            inOrder(temp.getLeftChild());
         }
-        System.out.println(temp);
+        System.out.println(temp.getValue());
         if (temp.getRightChild() != null) {
-            temp = temp.getRightChild();
-            inOrder(temp);
+            inOrder(temp.getRightChild());
         }
     }
 
     public E delete(E value){
-        E tempEl = null;
         if (root.getValue() == null){
-            throw new NoSuchElementException();
+            return null;
         }
-        TreeNode<E> target = root;
-        if (target.getValue().equals(value)){
-            tempEl = target.getValue();
-            target.setValue(null);
-            systemDeleter(target);
-            return tempEl;
-        }
-        if (target.getLeftChild() != null){
-            target = target.getLeftChild();
-            if (target.getValue().equals(value)){
-                tempEl = target.getValue();
-                target.setValue(null);
-                systemDeleter(target);
-                return tempEl;
-            }
-            else{
-                remover(target, value);
-            }
-        }
-        if (target.getRightChild() != null){
-            target = target.getRightChild();
-            if (target.getValue().equals(value)){
-                tempEl = target.getValue();
-                target.setValue(null);
-                systemDeleter(target);
-                return tempEl;
-            }
-            else{
-                remover(target, value);
-            }
-        }
-        return null;
+        return remover(root, null, value).getValue();
     }
-    private E remover(TreeNode<E> temp, E value){
-        if (temp.getLeftChild() != null){
-            temp = temp.getLeftChild();
-            if (temp.getValue().equals(value)){
-                E tempEl = temp.getValue();
-                temp.setValue(null);
-                systemDeleter(temp);
-                return tempEl;
-            }
-            else{
-                remover(temp, value);
-            }
+    private TreeNode<E> remover(TreeNode<E> temp, E parent, E value) {
+        if (temp == null) {
+            return null;
         }
-        if (temp.getRightChild() != null){
-            temp = temp.getRightChild();
-            if (temp.getValue().equals(value)){
-                E tempEl = temp.getValue();
-                temp.setValue(null);
-                systemDeleter(temp);
-                return tempEl;
+        if (temp.getValue().equals(value)) {
+            if (temp.getLeftChild() == null && temp.getRightChild() == null) {
+                return null;
             }
-            else{
-                remover(temp, value);
+            if (temp.getRightChild() == null) {
+                return temp.getLeftChild();
             }
-        }
-        return null;
-    }
-    private void systemDeleter(TreeNode<E> temp){
-        if (temp.getLeftChild() == null && temp.getRightChild() == null){
-            return;
-        }
-        if (temp.getLeftChild() == null && temp.getRightChild() != null){
-            temp.setValue(temp.getRightChild().getValue());
-            temp = temp.getRightChild();
-            temp.setValue(null);
-            systemDeleter(temp);
-            return;
-        }
-        else{
+            if (temp.getLeftChild() == null) {
+                return temp.getRightChild();
+            }
             temp.setValue(temp.getLeftChild().getValue());
-            temp = temp.getLeftChild();
-            temp.setValue(null);
-            systemDeleter(temp);
-            return;
+            temp.setLeftChild(remover(temp.getLeftChild(), temp.getLeftChild().getValue(), value));
+            temp.setValue(temp.getLeftChild().getValue());
+            return temp;
         }
+        if (temp.getValue().compareTo(value) > 0) {
+            temp.setLeftChild(remover(temp.getLeftChild(), temp.getValue(), value));
+        } else {
+            temp.setRightChild(remover(temp.getRightChild(), temp.getValue(), value));
+        }
+        return temp;
     }
 
     public void clearTree(){
@@ -305,37 +219,18 @@ public class BinarySearchTree<E extends Comparable<E>>{
             return;
         }
         root.setValue((E) parts.get(0));
-        TreeNode<E> temp = root;
         for (int i = 1; i < parts.size(); i++){
-            if (parts.get(i).compareTo((Integer)temp.getValue()) > 0){
-                if (temp.getLeftChild() == null){
-                    temp.setLeftChild(new TreeNode<>((E)parts.get(i), null, null));
-                }
-                else{
-                    temp = temp.getLeftChild();
-                    lastRecur(temp, parts, i);
-                }
-            }
-            else{
-                if (temp.getRightChild() == null){
-                    temp.setRightChild(new TreeNode<>((E)parts.get(i), null, null));
-                }
-                else{
-                    temp = temp.getRightChild();
-                    lastRecur(temp, parts, i);
-                }
-            }
+            lastRecur(root, parts, i);
         }
     }
     private void lastRecur(TreeNode<E> temp, ArrayList<Integer> parts, int placement){
-        if (parts.get(placement).compareTo((Integer)temp.getValue()) > 0){
+        if (parts.get(placement).compareTo((Integer)temp.getValue()) < 0){
             if (temp.getLeftChild() == null){
                 temp.setLeftChild(new TreeNode<>((E)parts.get(placement), null, null));
                 return;
             }
             else{
-                temp = temp.getLeftChild();
-                lastRecur(temp, parts, placement);
+                lastRecur(temp.getLeftChild(), parts, placement);
             }
         }
         else{
@@ -344,8 +239,7 @@ public class BinarySearchTree<E extends Comparable<E>>{
                 return;
             }
             else{
-                temp = temp.getRightChild();
-                lastRecur(temp, parts, placement);
+                lastRecur(temp.getRightChild(), parts, placement);
             }
         }
     }
